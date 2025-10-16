@@ -1,0 +1,67 @@
+"""
+main.py
+
+Backend module for the Student Loan Calculator web app.
+
+This module defines a FastAPI application that exposes a single POST endpoint
+`/calculate`. It receives loan input parameters from the user and returns a
+year-by-year projection of loan repayment, interest, and remaining balance.
+
+Author: Daniel Skerman
+"""
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+from calculator import calculate_loan
+
+app = FastAPI()
+
+class LoanInput(BaseModel):
+    """
+    Pydantic model representing the user input for the loan calculator.
+
+    Attributes:
+        plan (str): The type of UK student loan plan (default "plan_2").
+        outstanding (float): Current outstanding loan balance (default 53000).
+        salary (float): User's current annual salary (default 37000).
+        bonus_rate (float): Optional bonus rate as a fraction of salary (default 0.5).
+        salary_growth (float): Expected annual salary growth (default 0.05).
+    """
+    plan: str = "plan_2"
+    outstanding: float = 53000
+    salary: float = 37000.0
+    bonus_rate: float = 0.5
+    salary_growth: float = 0.05
+
+@app.post("/calculate")
+def calculate(input_data: LoanInput):
+    """
+    Calculate the yearly student loan projections.
+
+    This endpoint receives loan parameters, calls the core calculation function,
+    and returns a list of dictionaries containing yearly projections including:
+    - salary
+    - bonus
+    - total income
+    - income above threshold
+    - repayment amount
+    - loan outstanding
+    - interest accrued
+    - loan after interest
+    - loan after repayment
+
+    Args:
+        input_data (LoanInput): User-provided loan parameters.
+
+    Returns:
+        List[Dict]: A list of dictionaries, one per year, with the calculated
+        fields as described above.
+    """
+    result = calculate_loan(
+        input_data.plan,
+        input_data.outstanding,
+        input_data.salary,
+        input_data.bonus_rate,
+        input_data.salary_growth
+    )
+    return result
