@@ -11,10 +11,24 @@ Author: Daniel Skerman
 """
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from calculator import calculate_loan
 
 app = FastAPI()
+
+# Allow your frontend origin to make requests
+origins = [
+    "http://localhost:3000",  # Next.js dev server
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,        # allow only your frontend
+    allow_credentials=True,
+    allow_methods=["*"],          # allow POST, GET, OPTIONS, etc.
+    allow_headers=["*"],          # allow all headers
+)
 
 class LoanInput(BaseModel):
     """
