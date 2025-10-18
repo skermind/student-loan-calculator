@@ -1,8 +1,32 @@
 {
+  "plan_1": {
+    "threshold": 26065,
+    "interest_rate": 0.032,
+    "write_off_years": 30,
+    "repayment_rate": 0.09
+  },
   "plan_2": {
     "threshold": 28470,
     "interest_rate": 0.062,
     "write_off_years": 30,
     "repayment_rate": 0.09
+  },
+  "plan_4": {
+    "threshold": 32745,
+    "interest_rate": 0.032,
+    "write_off_years": 30,
+    "repayment_rate": 0.09
+  },
+  "plan_5": {
+    "threshold": 25000,
+    "interest_rate": 0.032,
+    "write_off_years": 30,
+    "repayment_rate": 0.09
+  },
+    "postgraduate": {
+    "threshold": 21000,
+    "interest_rate": 0.062,
+    "write_off_years": 30,
+    "repayment_rate": 0.06
   }
 }

@@ -118,6 +118,7 @@ export default function Home() {
                 <option value="plan_1">Plan 1</option>
                 <option value="plan_2">Plan 2</option>
                 <option value="plan_4">Plan 4</option>
+                <option value="plan_5">Plan 5</option>
                 <option value="postgraduate">Postgraduate</option>
               </select>
 
