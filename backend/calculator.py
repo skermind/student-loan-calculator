@@ -35,8 +35,10 @@ def calculate_loan(plan, outstanding, salary, bonus_rate, salary_growth):
             - "Repayment" (float): Amount repaid this year
             - "Interest" (float): Interest accrued this year
             - "Outstanding" (float): Remaining loan balance after repayment and interest
+            - "TimeToPayOff" (int, optional): The year the loan balance reaches 0, included in the final year's entry only.
 
     Notes:
+        - The calculation stops early if the loan is fully repaid before the write-off period.
         - Loan plan thresholds, interest rates, repayment rates, and write-off period
           are loaded from `data/loan_plans.json`.
         - Salary is compounded each year using `salary_growth`.
@@ -53,6 +55,7 @@ def calculate_loan(plan, outstanding, salary, bonus_rate, salary_growth):
     repayment_rate = config["repayment_rate"]
 
     rows = []
+    time_to_payoff = None
     for year in range(1, years + 1):
         salary = salary
         bonus = salary * bonus_rate
@@ -65,7 +68,7 @@ def calculate_loan(plan, outstanding, salary, bonus_rate, salary_growth):
         repayment_bonus_period = income_above_bonus_period * repayment_rate
         repayment = repayment_nominal_period + repayment_bonus_period
         interest = outstanding * interest_rate
-        outstanding = outstanding + interest - repayment
+        outstanding = max(0,outstanding + interest - repayment)
         rows.append({
             "Year": year,
             "Salary": salary,
@@ -75,5 +78,14 @@ def calculate_loan(plan, outstanding, salary, bonus_rate, salary_growth):
             "Interest": interest,
             "Outstanding": outstanding
         })
+        if outstanding <= 0 and time_to_payoff is None:
+            time_to_payoff = year
+            outstanding = 0
+            break
         salary *= (1 + salary_growth)
+    if time_to_payoff is None:
+        time_to_payoff = years
+    # Add TimeToPayOff to the final year's dictionary for frontend compatibility
+    if rows:
+        rows[-1]["TimeToPayOff"] = time_to_payoff
     return rows
