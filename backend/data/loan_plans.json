@@ -1,8 +1,8 @@
 {
   "plan_2": {
     "threshold": 28470,
-    "interest_rate": 0.08,
+    "interest_rate": 0.062,
     "write_off_years": 30,
-    "repayment_rate": 0.062
+    "repayment_rate": 0.09
   }
 }

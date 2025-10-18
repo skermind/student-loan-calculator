@@ -42,9 +42,9 @@ class LoanInput(BaseModel):
         salary_growth (float): Expected annual salary growth (default 0.05).
     """
     plan: str = "plan_2"
-    outstanding: float = 53000
-    salary: float = 37000.0
-    bonus_rate: float = 0.5
+    outstanding: float = 50000
+    salary: float = 30000.0
+    bonus_rate: float = 0.1
     salary_growth: float = 0.05
 
 @app.post("/calculate")
