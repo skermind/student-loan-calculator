@@ -57,43 +57,46 @@ export default function Home() {
     }
   };
 
-  // Submit form and fetch calculation from FastAPI
+  // Submit form and fetch calculation from FastAPI, with a short delay for UX
   const handleSubmit = async () => {
     if (loading) return;
     setLoading(true);
     setResults([]);
-    try {
-      // Convert bonus_rate and salary_growth from strings to numbers
-      const bonusRateNum = parseFloat(form.bonus_rate);
-      const salaryGrowthNum = parseFloat(form.salary_growth);
+    // Add a fake delay to show loading spinner for at least 1 second
+    setTimeout(async () => {
+      try {
+        // Convert bonus_rate and salary_growth from strings to numbers
+        const bonusRateNum = parseFloat(form.bonus_rate);
+        const salaryGrowthNum = parseFloat(form.salary_growth);
 
-      // Validate bonus_rate and salary_growth are numbers within 0-100
-      if (
-        isNaN(bonusRateNum) ||
-        bonusRateNum < 0 ||
-        bonusRateNum > 100 ||
-        isNaN(salaryGrowthNum) ||
-        salaryGrowthNum < 0 ||
-        salaryGrowthNum > 100
-      ) {
-        alert('Bonus Rate and Salary Growth must be numbers between 0 and 100.');
+        // Validate bonus_rate and salary_growth are numbers within 0-100
+        if (
+          isNaN(bonusRateNum) ||
+          bonusRateNum < 0 ||
+          bonusRateNum > 100 ||
+          isNaN(salaryGrowthNum) ||
+          salaryGrowthNum < 0 ||
+          salaryGrowthNum > 100
+        ) {
+          alert('Bonus Rate and Salary Growth must be numbers between 0 and 100.');
+          setLoading(false);
+          return;
+        }
+
+        // Convert bonus_rate and salary_growth from percentages to decimals if >1
+        const payload = {
+          ...form,
+          bonus_rate: bonusRateNum > 1 ? bonusRateNum / 100 : bonusRateNum,
+          salary_growth: salaryGrowthNum > 1 ? salaryGrowthNum / 100 : salaryGrowthNum,
+        };
+        const res = await axios.post<LoanYear[]>('http://127.0.0.1:8000/calculate', payload);
+        setResults(res.data);
+      } catch (error) {
+        console.error('Error fetching loan data:', error);
+      } finally {
         setLoading(false);
-        return;
       }
-
-      // Convert bonus_rate and salary_growth from percentages to decimals if >1
-      const payload = {
-        ...form,
-        bonus_rate: bonusRateNum > 1 ? bonusRateNum / 100 : bonusRateNum,
-        salary_growth: salaryGrowthNum > 1 ? salaryGrowthNum / 100 : salaryGrowthNum,
-      };
-      const res = await axios.post<LoanYear[]>('http://127.0.0.1:8000/calculate', payload);
-      setResults(res.data);
-    } catch (error) {
-      console.error('Error fetching loan data:', error);
-    } finally {
-      setLoading(false);
-    }
+    }, 1000);
   };
 
   return (
@@ -197,7 +200,15 @@ export default function Home() {
             disabled={loading}
             className={`w-full mt-4 font-semibold py-2 rounded-md transition ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#1DB954] hover:bg-[#17a74b] text-[#0f1117]'}`}
           >
-            {loading ? 'Calculating...' : 'Calculate'}
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-[#0f1117]" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                </svg>
+                Calculating...
+              </div>
+            ) : 'Calculate'}
           </button>
 
           {/* Conditionally render results table */}
