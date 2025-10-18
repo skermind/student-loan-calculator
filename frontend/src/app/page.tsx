@@ -37,6 +37,7 @@ export default function Home() {
   });
 
   const [results, setResults] = useState<LoanYear[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // Handle form input changes
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -58,6 +59,9 @@ export default function Home() {
 
   // Submit form and fetch calculation from FastAPI
   const handleSubmit = async () => {
+    if (loading) return;
+    setLoading(true);
+    setResults([]);
     try {
       // Convert bonus_rate and salary_growth from strings to numbers
       const bonusRateNum = parseFloat(form.bonus_rate);
@@ -73,6 +77,7 @@ export default function Home() {
         salaryGrowthNum > 100
       ) {
         alert('Bonus Rate and Salary Growth must be numbers between 0 and 100.');
+        setLoading(false);
         return;
       }
 
@@ -86,6 +91,8 @@ export default function Home() {
       setResults(res.data);
     } catch (error) {
       console.error('Error fetching loan data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -187,9 +194,10 @@ export default function Home() {
 
           <button
             onClick={handleSubmit}
-            className="w-full mt-4 bg-[#1DB954] hover:bg-[#17a74b] text-[#0f1117] font-semibold py-2 rounded-md transition"
+            disabled={loading}
+            className={`w-full mt-4 font-semibold py-2 rounded-md transition ${loading ? 'bg-gray-600 cursor-not-allowed' : 'bg-[#1DB954] hover:bg-[#17a74b] text-[#0f1117]'}`}
           >
-            Calculate
+            {loading ? 'Calculating...' : 'Calculate'}
           </button>
 
           {/* Conditionally render results table */}
