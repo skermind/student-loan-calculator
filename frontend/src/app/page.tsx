@@ -211,9 +211,35 @@ export default function Home() {
             ) : 'Calculate'}
           </button>
 
-          {/* Conditionally render results table */}
+          {/* Conditionally render results table and summary message */}
           {results.length > 0 && (
             <div className="mt-8">
+              {/* Payoff summary message */}
+              {(() => {
+                const last = results[results.length - 1];
+                if (!last) return null;
+                if (last.Outstanding <= 0) {
+                  return (
+                    <div
+                      className="mb-6 bg-blue-100 bg-opacity-20 border border-blue-300 rounded-lg text-center text-blue-200 py-4 px-6"
+                      style={{ backdropFilter: 'blur(0.5px)' }}
+                    >
+                      <span role="img" aria-label="party" className="mr-2">🎉</span>
+                      You’ll pay off your loan in <span className="font-semibold">{last.Year}</span> years. Consider overpaying to save on interest!
+                    </div>
+                  );
+                } else {
+                  return (
+                    <div
+                      className="mb-6 bg-blue-100 bg-opacity-20 border border-blue-300 rounded-lg text-center text-blue-200 py-4 px-6"
+                      style={{ backdropFilter: 'blur(0.5px)' }}
+                    >
+                      <span role="img" aria-label="lightbulb" className="mr-2">💡</span>
+                      Your loan will be written off after <span className="font-semibold">30</span> years.
+                    </div>
+                  );
+                }
+              })()}
               <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
                 <thead className="bg-[#1a1d29] text-[#1DB954]">
                   <tr>
@@ -240,6 +266,18 @@ export default function Home() {
                   ))}
                 </tbody>
               </table>
+              <div className="mt-6 text-center text-gray-400 text-xs italic whitespace-pre-line">
+                {`Disclaimer: This calculator is for informational purposes and is not legal or financial advice. 
+                For guidance on managing debt, please see UK debt charities: `}
+                <a
+                  href="https://www.stepchange.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline text-[#1DB954] hover:text-[#17a74b]"
+                >
+                  https://www.stepchange.org/
+                </a>
+              </div>
             </div>
           )}
         </div>
