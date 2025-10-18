@@ -2,25 +2,48 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Light theme */
+/* Your custom theme */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --font-sans: 'Geist Sans', Arial, Helvetica, sans-serif;
-  --font-mono: 'Geist Mono', monospace;
+  --background: #0f1117;
+  --foreground: #fcffe9;
+  --accent: #1DB954;
+  --card-bg: #1a1d29;
+  --border-color: #2a2f3d;
 }
 
-/* Dark theme */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-/* Apply variables */
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans);
+  font-family: sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--accent);
+  font-weight: bold;
+}
+
+button {
+  background-color: var(--accent);
+  color: #0f1117;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  background-color: #1ed760;
+}
+
+input, select, textarea {
+  background-color: var(--card-bg);
+  color: var(--foreground);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
 }
