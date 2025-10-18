@@ -12,7 +12,6 @@ interface LoanYear {
   Salary: number;
   Bonus: number;
   TotalIncome: number;
-  AboveThreshold: number;
   Repayment: number;
   Interest: number;
   Outstanding: number;
@@ -222,7 +221,6 @@ export default function Home() {
                     <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
                     <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
                     <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Above Threshold</th>
                     <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
                     <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
                     <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
@@ -235,7 +233,6 @@ export default function Home() {
                       <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
                       <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
                       <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
-                      <td className="border border-[#2a2f3d] px-3 py-1">£{r.AboveThreshold.toFixed(0)}</td>
                       <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
                       <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
                       <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
