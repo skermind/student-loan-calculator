@@ -40,12 +40,16 @@ class LoanInput(BaseModel):
         salary (float): User's current annual salary (default 37000).
         bonus_rate (float): Optional bonus rate as a fraction of salary (default 0.5).
         salary_growth (float): Expected annual salary growth (default 0.05).
+        graduation_year (int): The year the user graduated, used to determine repayment start.
+        birth_year (int): The user's year of birth, used to calculate age for loan write-off.
     """
     plan: str = "plan_2"
     outstanding: float = 50000
     salary: float = 30000.0
     bonus_rate: float = 0.1
     salary_growth: float = 0.05
+    graduation_year: int = 2021
+    birth_year: int = 2000
 
 @app.post("/calculate")
 def calculate(input_data: LoanInput):
@@ -64,6 +68,9 @@ def calculate(input_data: LoanInput):
     - loan after interest
     - loan after repayment
 
+    The calculation considers graduation year and birth year for accurate repayment 
+    and write-off logic, reflecting realistic loan conditions.
+
     Args:
         input_data (LoanInput): User-provided loan parameters.
 
@@ -76,6 +83,11 @@ def calculate(input_data: LoanInput):
         input_data.outstanding,
         input_data.salary,
         input_data.bonus_rate,
-        input_data.salary_growth
+        input_data.salary_growth,
+        input_data.graduation_year,
+        input_data.birth_year
     )
+    # Adjust the 'Year' field to start at 0 instead of 1
+    for i, year_data in enumerate(result):
+        year_data['Year'] = i
     return result
