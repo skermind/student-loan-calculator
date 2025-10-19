@@ -213,7 +213,7 @@ export default function Home() {
                 onChange={handleChange}
                 className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               >
-                <option value={2021}>2021</option>
+                <option value={2021}></option>
                 {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
@@ -233,7 +233,7 @@ export default function Home() {
                 onChange={handleChange}
                 className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               >
-                <option value={2000}>2000</option>
+                <option value={2000}></option>
                 {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
