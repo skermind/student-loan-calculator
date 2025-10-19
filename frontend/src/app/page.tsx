@@ -315,20 +315,21 @@ export default function Home() {
                   ))}
                 </tbody>
               </table>
-              <div className="mt-6 text-center text-gray-400 text-xs italic whitespace-pre-line">
-                {`Disclaimer: This calculator is for informational purposes and is not legal or financial advice. 
-                For guidance on managing debt, please see UK debt charities: `}
-                <a
-                  href="https://www.stepchange.org/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="underline text-[#1DB954] hover:text-[#17a74b]"
-                >
-                  https://www.stepchange.org/
-                </a>
-              </div>
             </div>
           )}
+          {/* Disclaimer always visible */}
+          <div className="mt-6 text-center text-gray-400 text-xs italic whitespace-pre-line">
+            {`Disclaimer: This calculator is for informational purposes and is not legal or financial advice. 
+            For guidance on managing debt, please see UK debt charities: `}
+            <a
+              href="https://www.stepchange.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline text-[#1DB954] hover:text-[#17a74b]"
+            >
+              https://www.stepchange.org/
+            </a>
+          </div>
         </div>
 
       </div>
