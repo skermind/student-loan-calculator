@@ -284,7 +284,7 @@ export default function Home() {
                       style={{ backdropFilter: 'blur(0.5px)' }}
                     >
                       <span role="img" aria-label="lightbulb" className="mr-2">💡</span>
-                      Your loan will be written off after <span className="font-semibold">30</span> years.
+                      Your loan will be written off in <span className="font-semibold">{last.Year}</span> years time.
                     </div>
                   );
                 }
