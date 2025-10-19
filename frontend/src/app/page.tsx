@@ -24,6 +24,8 @@ interface LoanForm {
   salary: number;
   bonus_rate: string;
   salary_growth: string;
+  graduation_year?: number;
+  birth_year?: number;
 }
 
 export default function Home() {
@@ -33,6 +35,8 @@ export default function Home() {
     salary: 30000,
     bonus_rate: '10',
     salary_growth: '5',
+    graduation_year: undefined,
+    birth_year: undefined,
   });
 
   const [results, setResults] = useState<LoanYear[]>([]);
@@ -46,6 +50,11 @@ export default function Home() {
       setForm(prev => ({
         ...prev,
         [name]: value,
+      }));
+    } else if (name === 'graduation_year' || name === 'birth_year') {
+      setForm(prev => ({
+        ...prev,
+        [name]: value === '' ? undefined : parseFloat(value),
       }));
     } else {
       setForm(prev => ({
@@ -191,6 +200,46 @@ export default function Home() {
               />
               <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Enter salary growth as a percentage (0-100)
+              </div>
+            </div>
+
+            {/* Graduation Year */}
+            <div className="flex items-center justify-between gap-x-4 mb-10 relative group">
+              <label htmlFor="graduation_year" className="text-[#a9b3c1] w-44">Graduation Year</label>
+              <select
+                id="graduation_year"
+                name="graduation_year"
+                value={form.graduation_year ?? 2021}
+                onChange={handleChange}
+                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+              >
+                <option value={2021}>2021</option>
+                {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+                Select your graduation year
+              </div>
+            </div>
+
+            {/* Birth Year */}
+            <div className="flex items-center justify-between gap-x-4 mb-10 relative group">
+              <label htmlFor="birth_year" className="text-[#a9b3c1] w-44">Birth Year</label>
+              <select
+                id="birth_year"
+                name="birth_year"
+                value={form.birth_year ?? 2000}
+                onChange={handleChange}
+                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+              >
+                <option value={2000}>2000</option>
+                {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </select>
+              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+                Select your birth year
               </div>
             </div>
           </div>
