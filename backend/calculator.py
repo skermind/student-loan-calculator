@@ -132,21 +132,26 @@ def calculate_loan(plan, outstanding, salary, bonus_rate, salary_growth, graduat
     return rows
 
 
-def summarize_loan_rows(rows):
+def summarize_loan_rows(rows, principal_loan_amount=None):
     """
-    Compute totals for outstanding balance and interest from loan projection rows.
+    Compute totals for outstanding balance and interest from loan projection rows,
+    and optionally return the principal loan amount.
 
     Args:
         rows (List[Dict]): Output from `calculate_loan`.
+        principal_loan_amount (float, optional): Initial outstanding loan amount.
+            If omitted, it is inferred from the first row's values.
 
     Returns:
         Dict[str, float]: Totals for the following keys:
+            - "PrincipalLoanAmount": The initial outstanding balance.
             - "TotalOutstanding": Sum of the Outstanding column.
             - "TotalInterest": Sum of the Interest column.
     """
     total_outstanding = sum(float(row.get("Outstanding", 0)) for row in rows)
     total_interest = sum(float(row.get("Interest", 0)) for row in rows)
     return {
+        "PrincipalLoanAmount": float(principal_loan_amount) if principal_loan_amount is not None else 0.0,
         "TotalOutstanding": total_outstanding,
         "TotalInterest": total_interest,
     }

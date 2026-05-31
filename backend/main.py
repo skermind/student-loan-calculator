@@ -13,7 +13,7 @@ Author: Daniel Skerman
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from calculator import calculate_loan
+from calculator import calculate_loan, summarize_loan_rows
 
 app = FastAPI()
 
@@ -90,4 +90,9 @@ def calculate(input_data: LoanInput):
     # Adjust the 'Year' field to start at 0 instead of 1
     for i, year_data in enumerate(result):
         year_data['Year'] = i
-    return result
+
+    summary = summarize_loan_rows(result, principal_loan_amount=input_data.outstanding)
+    return {
+        "rows": result,
+        "summary": summary,
+    }
