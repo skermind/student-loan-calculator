@@ -8,7 +8,9 @@ Application to compare student loans and work out if it reasonable to pay back y
 #### Development
 ```bash
 cd backend
-source .venv/bin/activate
+python3 -m venv venv
+source venv/bin/activate
+pip install -r ../requirements.txt
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 

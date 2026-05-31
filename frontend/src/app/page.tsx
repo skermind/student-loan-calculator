@@ -2,6 +2,7 @@
 import { useState, ChangeEvent } from 'react';
 import axios from 'axios';
 import { Geist, Geist_Mono } from 'next/font/google';
+import LoanSummaryChart from '@/components/LoanSummaryChart';
 
 const geistSans = Geist({ subsets: ['latin'] });
 const geistMono = Geist_Mono({ subsets: ['latin'] });
@@ -28,6 +29,13 @@ interface LoanForm {
   birth_year?: number;
 }
 
+// Define the summary data type
+interface LoanSummary {
+  PrincipalLoanAmount: number;
+  TotalOutstanding: number;
+  TotalInterest: number;
+}
+
 export default function Home() {
   const [form, setForm] = useState<LoanForm>({
     plan: 'plan_2',
@@ -40,6 +48,7 @@ export default function Home() {
   });
 
   const [results, setResults] = useState<LoanYear[]>([]);
+  const [summary, setSummary] = useState<LoanSummary | null>(null);
   const [loading, setLoading] = useState(false);
 
   // Handle form input changes
@@ -70,6 +79,7 @@ export default function Home() {
     if (loading) return;
     setLoading(true);
     setResults([]);
+    setSummary(null);
     // Add a fake delay to show loading spinner for at least 1 second
     setTimeout(async () => {
       try {
@@ -97,8 +107,14 @@ export default function Home() {
           bonus_rate: bonusRateNum > 1 ? bonusRateNum / 100 : bonusRateNum,
           salary_growth: salaryGrowthNum > 1 ? salaryGrowthNum / 100 : salaryGrowthNum,
         };
-        const res = await axios.post<LoanYear[]>('http://127.0.0.1:8000/calculate', payload);
-        setResults(res.data);
+        
+        const [resData, resSummary] = await Promise.all([
+          axios.post<LoanYear[]>('http://127.0.0.1:8000/calculate', payload),
+          axios.post<LoanSummary>('http://127.0.0.1:8000/calculate-summary', payload),
+        ]);
+        
+        setResults(resData.data);
+        setSummary(resSummary.data);
       } catch (error) {
         console.error('Error fetching loan data:', error);
       } finally {
@@ -263,6 +279,14 @@ export default function Home() {
           {/* Conditionally render results table and summary message */}
           {results.length > 0 && (
             <div className="mt-8">
+              {/* Loan Summary Chart */}
+              {summary && (
+                <LoanSummaryChart 
+                  principal={summary.PrincipalLoanAmount} 
+                  interest={summary.TotalInterest}
+                />
+              )}
+              
               {/* Payoff summary message */}
               {(() => {
                 const last = results[results.length - 1];
