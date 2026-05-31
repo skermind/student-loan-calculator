@@ -41,29 +41,6 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
     return () => observer.disconnect();
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: [0.34, 1.56, 0.64, 1],
-      },
-    },
-  };
-
   const barVariants = {
     hidden: { scaleX: 0 },
     visible: {
@@ -106,17 +83,22 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
     <motion.div
       ref={containerRef}
       className="w-full mt-12 mb-8"
-      variants={containerVariants}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
+      initial={{ opacity: 0 }}
+      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       {/* Title */}
-      <motion.h2 className="text-2xl font-bold text-[#1DB954] mb-8" variants={itemVariants}>
+      <motion.h2
+        className="text-2xl font-bold text-[#1DB954] mb-8"
+        initial={{ opacity: 0, y: 20 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
+      >
         Your Loan Breakdown
       </motion.h2>
 
       {/* Main Bar Chart */}
-      <motion.div className="space-y-8" variants={itemVariants}>
+      <motion.div className="space-y-8">
         {/* Segmented Financial Bar (Apple-style system) */}
         <motion.div
           className="w-full space-y-3"
@@ -236,7 +218,12 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
         </motion.div>
 
         {/* Legend */}
-        <motion.div className="flex gap-8 mt-10 pt-6 border-t border-[#2a2f3d]" variants={itemVariants}>
+        <motion.div
+          className="flex gap-8 mt-10 pt-6 border-t border-[#2a2f3d]"
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
           <div className="flex items-center gap-3">
             <div className="w-6 h-6 bg-[#1DB954] rounded" />
             <div>
@@ -269,7 +256,12 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
         </motion.div>
 
         {/* Insight Text */}
-        <motion.p className="text-[#a9b3c1] text-sm italic" variants={itemVariants}>
+        <motion.p
+          className="text-[#a9b3c1] text-sm italic"
+          initial={{ opacity: 0, y: 10 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+        >
           {(interest / principal) > 0.5
             ? `You'll pay £${interest.toLocaleString('en-GB', { maximumFractionDigits: 0 })} in interest — ${((interest / principal) * 100).toFixed(0)}% of your initial loan amount.`
             : `Your interest costs are relatively low at £${interest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}.`}
