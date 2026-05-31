@@ -1,8 +1,11 @@
 'use client';
-import { useState, ChangeEvent } from 'react';
+import { useState, useEffect, ChangeEvent } from 'react';
 import axios from 'axios';
 import { Geist, Geist_Mono } from 'next/font/google';
+import * as Slider from '@radix-ui/react-slider';
 import LoanSummaryChart from '@/components/LoanSummaryChart';
+import OverpaymentComparisonLineGraph from '@/components/OverpaymentComparisonLineGraph';
+import OverpaymentComparisonSummary from '@/components/OverpaymentComparisonSummary';
 
 const geistSans = Geist({ subsets: ['latin'] });
 const geistMono = Geist_Mono({ subsets: ['latin'] });
@@ -13,6 +16,18 @@ interface LoanYear {
   Salary: number;
   Bonus: number;
   TotalIncome: number;
+  Repayment: number;
+  Interest: number;
+  Outstanding: number;
+}
+
+// Define a TypeScript interface for a single year's loan data
+interface LoanOverpayment {
+  Year: number;
+  Salary: number;
+  Bonus: number;
+  TotalIncome: number;
+  OverPayment: number;
   Repayment: number;
   Interest: number;
   Outstanding: number;
@@ -49,8 +64,55 @@ export default function Home() {
 
   const [results, setResults] = useState<LoanYear[]>([]);
   const [summary, setSummary] = useState<LoanSummary | null>(null);
+  const [overpaymentResults, setOverpaymentResults] = useState<LoanOverpayment[]>([]);
   const [loading, setLoading] = useState(false);
+  const [overpaymentMonthly, setOverpaymentMonthly] = useState<number>(0);
 
+  useEffect(() => {
+    if (results.length === 0) return;
+
+    const timeout = setTimeout(() => {
+      fetchResults();
+    }, 300);
+
+    return () => clearTimeout(timeout);
+  }, [overpaymentMonthly]);
+
+  const fetchResults = async () => {
+    try {
+      const bonusRateNum = parseFloat(form.bonus_rate);
+      const salaryGrowthNum = parseFloat(form.salary_growth);
+
+      const payload = {
+        ...form,
+        bonus_rate: bonusRateNum > 1 ? bonusRateNum / 100 : bonusRateNum,
+        salary_growth: salaryGrowthNum > 1 ? salaryGrowthNum / 100 : salaryGrowthNum,
+        extra_annual_overpayment: overpaymentMonthly * 12,
+      };
+
+      const resData = await axios.post<LoanYear[]>(
+        'http://127.0.0.1:8000/calculate',
+        payload
+      );
+
+      const resSummary = await axios.post<LoanSummary>(
+        'http://127.0.0.1:8000/calculate-summary',
+        payload
+      );
+
+      const resOver = await axios.post<LoanOverpayment[]>(
+        'http://127.0.0.1:8000/calculate-overpayment',
+        payload
+      );
+
+      setResults(resData.data);
+      setSummary(resSummary.data);
+      setOverpaymentResults(resOver.data);
+    } catch (error) {
+      console.error('Error fetching loan data:', error);
+    }
+  };
+  
   // Handle form input changes
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -101,20 +163,7 @@ export default function Home() {
           return;
         }
 
-        // Convert bonus_rate and salary_growth from percentages to decimals if >1
-        const payload = {
-          ...form,
-          bonus_rate: bonusRateNum > 1 ? bonusRateNum / 100 : bonusRateNum,
-          salary_growth: salaryGrowthNum > 1 ? salaryGrowthNum / 100 : salaryGrowthNum,
-        };
-        
-        const [resData, resSummary] = await Promise.all([
-          axios.post<LoanYear[]>('http://127.0.0.1:8000/calculate', payload),
-          axios.post<LoanSummary>('http://127.0.0.1:8000/calculate-summary', payload),
-        ]);
-        
-        setResults(resData.data);
-        setSummary(resSummary.data);
+        await fetchResults();
       } catch (error) {
         console.error('Error fetching loan data:', error);
       } finally {
@@ -125,6 +174,27 @@ export default function Home() {
 
   return (
     <div className={`${geistSans.className} ${geistMono.className} font-sans min-h-screen flex items-center justify-center bg-[#0f1117] text-[#fcffe9] p-8`}>
+      <style jsx global>{`
+        input[type="range"]::-webkit-slider-runnable-track {
+          height: 4px;
+        }
+
+        input[type="range"]::-moz-range-track {
+          height: 4px;
+          border-radius: 999px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+          width: 14px;
+          height: 14px;
+          margin-top: -5px;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+          width: 14px;
+          height: 14px;
+        }
+      `}</style>
       <div className="max-w-3xl w-full">
         <h1 className="text-[#1DB954] text-4xl font-bold text-center mb-8">Student Loan Calculator</h1>
 
@@ -339,6 +409,91 @@ export default function Home() {
                   ))}
                 </tbody>
               </table>
+              <div className="mt-6 p-4 bg-[#1a1d29] border border-[#2a2f3d] rounded-lg">
+                <div className="flex items-center justify-between gap-4">
+                  
+                  <label className="text-[#a9b3c1] w-64">
+                    Overpayment (£/month)
+                  </label>
+
+                  <Slider.Root
+                    className="relative flex items-center w-full h-5 touch-none select-none"
+                    value={[overpaymentMonthly]}
+                    min={0}
+                    max={1000}
+                    step={50}
+                    onValueChange={(value) => setOverpaymentMonthly(value[0])}
+                  >
+                    <Slider.Track className="relative grow rounded-full h-1 bg-[#2a2f3d]">
+                      <Slider.Range className="absolute h-full bg-[#1DB954] rounded-full" />
+                    </Slider.Track>
+
+                    <Slider.Thumb className="block w-4 h-4 bg-white rounded-full shadow-md" />
+                  </Slider.Root>
+
+                  <input
+                    type="number"
+                    min={0}
+                    max={1000}
+                    step={50}
+                    value={overpaymentMonthly}
+                    onChange={(e) => setOverpaymentMonthly(Number(e.target.value))}
+                    className="w-24 bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 text-center"
+                  />
+                </div>
+
+                <p className="text-xs text-[#a9b3c1] mt-2">
+                  Extra monthly overpayment applied to reduce your loan faster.
+                </p>
+              </div>
+
+              <div className="mt-8">
+                <OverpaymentComparisonSummary
+                  baseline={results}
+                  overpayment={overpaymentResults}
+                  isOverpaymentActive={overpaymentMonthly > 0}
+                />
+              </div>
+
+              <div className="mt-8 mb-8">
+                <OverpaymentComparisonLineGraph
+                  baseline={results}
+                  overpayment={overpaymentResults}
+                />
+              </div>
+
+              <div className="mt-6">
+                <h3 className="text-[#1DB954] text-sm font-semibold mb-2">
+                  Overpayment Scenario
+                </h3>
+
+                <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
+                  <thead className="bg-[#1a1d29] text-[#1DB954]">
+                    <tr>
+                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
+                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
+                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
+                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
+                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
+                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
+                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {overpaymentResults.map((r, i) => (
+                      <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
+                        <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
+                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
+                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
+                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
+                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
+                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
+                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
           {/* Disclaimer always visible */}

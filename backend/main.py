@@ -13,7 +13,7 @@ Author: Daniel Skerman
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from calculator import calculate_loan, summarize_loan_rows
+from calculator import calculate_loan, summarize_loan_rows, calculate_loan_overpayment
 
 app = FastAPI()
 
@@ -50,6 +50,7 @@ class LoanInput(BaseModel):
     salary_growth: float = 0.05
     graduation_year: int = 2021
     birth_year: int = 2000
+    extra_annual_overpayment: float = 0
 
 @app.post("/calculate")
 def calculate(input_data: LoanInput):
@@ -122,3 +123,21 @@ def calculate_summary(input_data: LoanInput):
     
     summary = summarize_loan_rows(result, principal_loan_amount=input_data.outstanding)
     return summary
+
+@app.post("/calculate-overpayment")
+def calculate_overpayment(input_data: LoanInput):
+    """
+    Dedicated endpoint for overpayment scenario calculations.
+    Returns full yearly breakdown including extra annual overpayment effects.
+    """
+    result = calculate_loan_overpayment(
+        input_data.plan,
+        input_data.outstanding,
+        input_data.salary,
+        input_data.bonus_rate,
+        input_data.salary_growth,
+        input_data.graduation_year,
+        input_data.birth_year,
+        input_data.extra_annual_overpayment
+    )
+    return result
