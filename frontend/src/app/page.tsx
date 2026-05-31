@@ -63,7 +63,7 @@ export default function Home() {
     } else if (name === 'graduation_year' || name === 'birth_year') {
       setForm(prev => ({
         ...prev,
-        [name]: value === '' ? undefined : parseFloat(value),
+        [name]: value === '' ? undefined : Number(value),
       }));
     } else {
       setForm(prev => ({
@@ -225,11 +225,11 @@ export default function Home() {
               <select
                 id="graduation_year"
                 name="graduation_year"
-                value={form.graduation_year ?? 2021}
+                value={form.graduation_year ?? ''}
                 onChange={handleChange}
                 className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               >
-                <option value={2021}></option>
+                <option value="" disabled>Select graduation year</option>
                 {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
@@ -245,11 +245,11 @@ export default function Home() {
               <select
                 id="birth_year"
                 name="birth_year"
-                value={form.birth_year ?? 2000}
+                value={form.birth_year ?? ''}
                 onChange={handleChange}
                 className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               >
-                <option value={2000}></option>
+                <option value="" disabled>Select birth year</option>
                 {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
