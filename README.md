@@ -8,7 +8,6 @@ Application to compare student loans and work out if it reasonable to pay back y
 #### Development
 ```bash
 cd backend
-source .venv/bin/activate
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
