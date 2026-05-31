@@ -4,6 +4,7 @@ import axios from 'axios';
 import { Geist, Geist_Mono } from 'next/font/google';
 import * as Slider from '@radix-ui/react-slider';
 import LoanSummaryChart from '@/components/LoanSummaryChart';
+import OverpaymentSummaryChart from '@/components/OverpaymentSummaryChart';
 import OverpaymentComparisonLineGraph from '@/components/OverpaymentComparisonLineGraph';
 import OverpaymentComparisonSummary from '@/components/OverpaymentComparisonSummary';
 
@@ -349,18 +350,20 @@ export default function Home() {
           {/* Conditionally render results table and summary message */}
           {results.length > 0 && (
             <div className="mt-8">
-              {/* Loan Summary Chart */}
+
+              {/* Loan Summary Chart (always visible) */}
               {summary && (
-                <LoanSummaryChart 
-                  principal={summary.PrincipalLoanAmount} 
+                <LoanSummaryChart
+                  principal={summary.PrincipalLoanAmount}
                   interest={summary.TotalInterest}
                 />
               )}
-              
-              {/* Payoff summary message */}
+
+              {/* Payoff summary message (always visible) */}
               {(() => {
                 const last = results[results.length - 1];
                 if (!last) return null;
+
                 if (last.Outstanding <= 0) {
                   return (
                     <div
@@ -371,47 +374,22 @@ export default function Home() {
                       You’ll pay off your loan in <span className="font-semibold">{last.Year}</span> years. Consider overpaying to save on interest!
                     </div>
                   );
-                } else {
-                  return (
-                    <div
-                      className="mb-6 bg-blue-100 bg-opacity-20 border border-blue-300 rounded-lg text-center text-blue-200 py-4 px-6"
-                      style={{ backdropFilter: 'blur(0.5px)' }}
-                    >
-                      <span role="img" aria-label="lightbulb" className="mr-2">💡</span>
-                      Your loan will be written off in <span className="font-semibold">{last.Year}</span> years time.
-                    </div>
-                  );
                 }
+
+                return (
+                  <div
+                    className="mb-6 bg-blue-100 bg-opacity-20 border border-blue-300 rounded-lg text-center text-blue-200 py-4 px-6"
+                    style={{ backdropFilter: 'blur(0.5px)' }}
+                  >
+                    <span role="img" aria-label="lightbulb" className="mr-2">💡</span>
+                    Your loan will be written off in <span className="font-semibold">{last.Year}</span> years time.
+                  </div>
+                );
               })()}
-              <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
-                <thead className="bg-[#1a1d29] text-[#1DB954]">
-                  <tr>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
-                    <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {results.map((r, i) => (
-                    <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
-                      <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
-                      <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
-                      <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
-                      <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
-                      <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
-                      <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
-                      <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+
+              {/* Overpayment slider (always visible) */}
               <div className="mt-6 p-4 bg-[#1a1d29] border border-[#2a2f3d] rounded-lg">
                 <div className="flex items-center justify-between gap-4">
-                  
                   <label className="text-[#a9b3c1] w-64">
                     Overpayment (£/month)
                   </label>
@@ -447,6 +425,14 @@ export default function Home() {
                 </p>
               </div>
 
+              {/* Unified Overpayment Comparison Chart */}
+              {summary && results.length > 0 && (
+                <div className="mt-8 mb-8">
+                  <OverpaymentSummaryChart
+                    summary={summary}
+                    results={results}
+                    overpaymentResults={overpaymentResults}
+                  />
               <div className="mt-8">
                 <OverpaymentComparisonSummary
                   baseline={results}
@@ -461,39 +447,88 @@ export default function Home() {
                   overpayment={overpaymentResults}
                 />
               </div>
+            
+                </div>
+              )}
 
-              <div className="mt-6">
-                <h3 className="text-[#1DB954] text-sm font-semibold mb-2">
-                  Overpayment Scenario
-                </h3>
+              {/* Figures only in dropdown */}
+              <details className="mt-8 bg-[#1a1d29] border border-[#2a2f3d] rounded-lg p-4">
+                <summary className="cursor-pointer text-[#1DB954] font-semibold text-sm">
+                  View yearly breakdown tables
+                </summary>
 
-                <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
-                  <thead className="bg-[#1a1d29] text-[#1DB954]">
-                    <tr>
-                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
-                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
-                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
-                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
-                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
-                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
-                      <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {overpaymentResults.map((r, i) => (
-                      <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
-                        <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
-                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
-                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
-                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
-                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
-                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
-                        <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                <div className="mt-6">
+
+                  {/* Baseline table */}
+                  <div className="mb-10">
+                    <h3 className="text-[#1DB954] text-sm font-semibold mb-2">
+                      Baseline Scenario
+                    </h3>
+
+                    <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
+                      <thead className="bg-[#1a1d29] text-[#1DB954]">
+                        <tr>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {results.map((r, i) => (
+                          <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
+                            <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Overpayment table */}
+                  <div>
+                    <h3 className="text-[#1DB954] text-sm font-semibold mb-2">
+                      Overpayment Scenario
+                    </h3>
+
+                    <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
+                      <thead className="bg-[#1a1d29] text-[#1DB954]">
+                        <tr>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
+                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {overpaymentResults.map((r, i) => (
+                          <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
+                            <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
+                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+
+                </div>
+              </details>
             </div>
           )}
           {/* Disclaimer always visible */}
