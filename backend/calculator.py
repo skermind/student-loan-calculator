@@ -130,3 +130,23 @@ def calculate_loan(plan, outstanding, salary, bonus_rate, salary_growth, graduat
     if rows:
         rows[-1]["TimeToPayOff"] = time_to_payoff
     return rows
+
+
+def summarize_loan_rows(rows):
+    """
+    Compute totals for outstanding balance and interest from loan projection rows.
+
+    Args:
+        rows (List[Dict]): Output from `calculate_loan`.
+
+    Returns:
+        Dict[str, float]: Totals for the following keys:
+            - "TotalOutstanding": Sum of the Outstanding column.
+            - "TotalInterest": Sum of the Interest column.
+    """
+    total_outstanding = sum(float(row.get("Outstanding", 0)) for row in rows)
+    total_interest = sum(float(row.get("Interest", 0)) for row in rows)
+    return {
+        "TotalOutstanding": total_outstanding,
+        "TotalInterest": total_interest,
+    }
