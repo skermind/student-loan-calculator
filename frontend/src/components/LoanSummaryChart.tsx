@@ -192,7 +192,7 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
 
             {hovered && hoverPos !== null && (
               <div
-                className="absolute -bottom-5 px-3 py-1 rounded-md bg-[#0f1117] border border-[#2a2f3d] text-xs shadow-lg"
+                className="absolute -bottom-5 px-3 py-1  bg-gray-900 rounded-lg text-center text-xs shadow-lg"
                 style={{
                   left: `${hoverPos}%`,
                   transform: 'translateX(-50%)',
