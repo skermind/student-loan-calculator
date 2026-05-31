@@ -99,7 +99,14 @@ def calculate_loan(plan, outstanding, salary, bonus_rate, salary_growth, graduat
         repayment_bonus_period = income_above_bonus_period * repayment_rate
         repayment = repayment_nominal_period + repayment_bonus_period
         interest = outstanding * interest_rate
-        outstanding = max(0, outstanding + interest - repayment)
+        
+        # Prevent overpaying in the final year. The repayment cannot exceed
+        # the balance owed after interest has been applied.
+        balance_due = outstanding + interest
+        repayment = min(repayment, balance_due)
+
+        outstanding = max(0, balance_due - repayment)
+        
         rows.append({
             "Year": year_number,
             "Salary": salary_year,
