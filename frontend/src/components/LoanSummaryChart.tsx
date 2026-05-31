@@ -2,14 +2,6 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ResponsiveContainer,
-  Tooltip,
-} from 'recharts';
 
 interface LoanSummaryProps {
   principal: number;
@@ -20,6 +12,7 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [hovered, setHovered] = useState<'principal' | 'interest' | null>(null);
+  const [hoverPos, setHoverPos] = useState<number | null>(null);
   const total = principal + interest;
   const principalPercent = (principal / total) * 100;
   const data = [
@@ -108,35 +101,6 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
     },
   };
 
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (!active || !payload?.length) return null;
-
-    const item = payload[0];
-    const key = item?.dataKey;
-    const value = item?.value;
-
-    if (key === 'principal') {
-      return (
-        <div className="bg-[#0f1117] border border-[#2a2f3d] rounded-lg px-3 py-2 shadow-lg">
-          <p className="text-[#1DB954] text-xs font-semibold">
-            Principal: £{value?.toLocaleString('en-GB')}
-          </p>
-        </div>
-      );
-    }
-
-    if (key === 'interest') {
-      return (
-        <div className="bg-[#0f1117] border border-[#2a2f3d] rounded-lg px-3 py-2 shadow-lg">
-          <p className="text-[#ff6b6b] text-xs font-semibold">
-            Interest: £{value?.toLocaleString('en-GB')}
-          </p>
-        </div>
-      );
-    }
-
-    return null;
-  };
 
   return (
     <motion.div
@@ -153,112 +117,122 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
 
       {/* Main Bar Chart */}
       <motion.div className="space-y-8" variants={itemVariants}>
-        {/* Recharts Chart */}
+        {/* Segmented Financial Bar (Apple-style system) */}
         <motion.div
-          className="w-full h-24 overflow-visible"
+          className="w-full space-y-3"
           variants={barVariants}
           initial="hidden"
           animate={isInView ? 'visible' : 'hidden'}
           style={{ transformOrigin: 'left' }}
         >
-          {/* Sweep highlight */}
-          <motion.div
-            className="absolute inset-0 pointer-events-none"
-            initial={{ x: '-100%' }}
-            animate={isInView ? { x: '100%' } : { x: '-100%' }}
-            transition={{
-              duration: 1.8,
-              ease: [0.22, 1, 0.36, 1],
-              delay: 0.2,
-            }}
-            style={{
-              background:
-                'linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)',
-            }}
-          />
+          <div className="relative w-full">
+            {/* BAR TRACK */}
+            <div className="relative w-full h-12 bg-[#161924] rounded-lg overflow-hidden ring-1 ring-[#2a2f3d]">
 
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={data}
-              layout="vertical"
-              margin={{ top: 0, right: 30, left: 0, bottom: 0 }}
-              onMouseMove={(state: any) => {
-                if (!state?.activePayload?.length) return;
-
-                const key = state.activePayload[0]?.dataKey;
-
-                if (key === 'principal' || key === 'interest') {
-                  setHovered(key);
-                }
-              }}
-              onMouseLeave={() => setHovered(null)}
-            >
-              <XAxis
-                type="number"
-                domain={[0, total]}
-                ticks={[0, principal, total]}
-                axisLine={false}
-                tickLine={false}
-                tick={{
-                  fill: '#a9b3c1',
-                  fontSize: 12,
+              {/* Sweep highlight */}
+              <motion.div
+                className="absolute inset-0 pointer-events-none"
+                initial={{ x: '-100%' }}
+                animate={isInView ? { x: '100%' } : { x: '-100%' }}
+                transition={{
+                  duration: 1.8,
+                  ease: [0.22, 1, 0.36, 1],
+                  delay: 0.2,
                 }}
-                tickFormatter={(value) =>
-                  `£${Number(value).toLocaleString('en-GB', {
-                    maximumFractionDigits: 0,
-                  })}`
-                }
-              />
-
-              <YAxis
-                type="category"
-                dataKey="name"
-                axisLine={false}
-                tickLine={false}
-                tick={{
-                  fill: '#a9b3c1',
-                  fontSize: 12,
-                }}
-              />
-
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{ fill: 'transparent' }}
-              />
-
-              <Bar
-                dataKey="principal"
-                stackId="a"
-                fill="#1DB954"
-                fillOpacity={hovered && hovered !== 'principal' ? 0.25 : 1}
                 style={{
+                  background:
+                    'linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%)',
+                }}
+              />
+
+              {/* PRINCIPAL SEGMENT */}
+              <motion.div
+                className="absolute left-0 top-0 h-full bg-[#1DB954]"
+                style={{
+                  width: `${(principal / total) * 100}%`,
+                  opacity: hovered && hovered !== 'principal' ? 0.25 : 1,
                   filter:
                     hovered === 'principal'
-                      ? 'drop-shadow(0px 0px 8px rgba(29,185,84,0.45))'
+                      ? 'drop-shadow(0px 0px 10px rgba(29,185,84,0.5))'
                       : 'none',
+                  transition: 'all 200ms ease',
                 }}
-                radius={[6, 0, 0, 6]}
-                isAnimationActive={isInView}
-                animationDuration={1800}
+                onMouseEnter={() => {
+                  setHovered('principal');
+                  setHoverPos(principalPercent / 2);
+                }}
+                onMouseLeave={() => {
+                  setHovered(null);
+                  setHoverPos(null);
+                }}
               />
 
-              <Bar
-                dataKey="interest"
-                stackId="a"
-                fill="#ff6b6b"
-                fillOpacity={hovered && hovered !== 'interest' ? 0.25 : 1}
+              {/* INTEREST SEGMENT */}
+              <motion.div
+                className="absolute top-0 right-0 h-full bg-[#ff6b6b]"
                 style={{
+                  width: `${(interest / total) * 100}%`,
+                  opacity: hovered && hovered !== 'interest' ? 0.25 : 1,
                   filter:
                     hovered === 'interest'
-                      ? 'drop-shadow(0px 0px 8px rgba(255,107,107,0.35))'
+                      ? 'drop-shadow(0px 0px 10px rgba(255,107,107,0.45))'
                       : 'none',
+                  transition: 'all 200ms ease',
                 }}
-                radius={[0, 6, 6, 0]}
-                isAnimationActive={isInView}
-                animationDuration={1800}
+                onMouseEnter={() => {
+                  setHovered('interest');
+                  setHoverPos(principalPercent + (100 - principalPercent) / 2);
+                }}
+                onMouseLeave={() => {
+                  setHovered(null);
+                  setHoverPos(null);
+                }}
               />
-            </BarChart>
-          </ResponsiveContainer>
+            </div>
+
+            {hovered && hoverPos !== null && (
+              <div
+                className="absolute -bottom-5 px-3 py-1 rounded-md bg-[#0f1117] border border-[#2a2f3d] text-xs shadow-lg"
+                style={{
+                  left: `${hoverPos}%`,
+                  transform: 'translateX(-50%)',
+                  pointerEvents: 'none',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {hovered === 'principal' ? (
+                  <span className="text-[#1DB954] font-semibold">
+                    Principal: £{principal.toLocaleString('en-GB')}
+                  </span>
+                ) : (
+                  <span className="text-[#ff6b6b] font-semibold">
+                    Interest: £{interest.toLocaleString('en-GB')}
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* AXIS */}
+            <div className="relative w-full h-6">
+              <div className="absolute left-0 text-xs text-[#a9b3c1]">
+                £0
+              </div>
+
+              <div
+                className="absolute text-xs text-[#1DB954]"
+                style={{
+                  left: `${(principal / total) * 100}%`,
+                  transform: 'translateX(-50%)',
+                }}
+              >
+                £{principal.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+              </div>
+
+              <div className="absolute right-0 text-xs text-[#fcffe9]">
+                £{total.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+              </div>
+            </div>
+          </div>
         </motion.div>
 
         {/* Legend */}
