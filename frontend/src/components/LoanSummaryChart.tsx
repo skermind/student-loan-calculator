@@ -188,7 +188,7 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
                   </span>
                 ) : (
                   <span className="text-[#ff6b6b] font-semibold">
-                    Interest: £{interest.toLocaleString('en-GB')}
+                    Interest: £{interest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
                   </span>
                 )}
               </div>
