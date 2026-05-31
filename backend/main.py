@@ -93,8 +93,32 @@ def calculate(input_data: LoanInput):
      
     return result
 
-    # summary = summarize_loan_rows(result, principal_loan_amount=input_data.outstanding)
-    # return {
-    #     "rows": result,
-    #     "summary": summary,
-    # }
+@app.post("/calculate-summary")
+def calculate_summary(input_data: LoanInput):
+    """
+    Calculate loan summary with principal and interest totals.
+
+    This endpoint receives loan parameters and returns a summary of the total
+    principal loan amount, total outstanding balance, and total interest accrued.
+
+    Args:
+        input_data (LoanInput): User-provided loan parameters.
+
+    Returns:
+        Dict: A dictionary containing:
+            - PrincipalLoanAmount: Initial outstanding loan balance
+            - TotalOutstanding: Total remaining balance
+            - TotalInterest: Total interest accrued
+    """
+    result = calculate_loan(
+        input_data.plan,
+        input_data.outstanding,
+        input_data.salary,
+        input_data.bonus_rate,
+        input_data.salary_growth,
+        input_data.graduation_year,
+        input_data.birth_year
+    )
+    
+    summary = summarize_loan_rows(result, principal_loan_amount=input_data.outstanding)
+    return summary
