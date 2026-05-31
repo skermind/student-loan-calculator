@@ -1,0 +1,12 @@
+# Minimal Python dependencies for the backend
+# - FastAPI: web framework used in `backend/main.py`
+# - Uvicorn: ASGI server to run the FastAPI app
+# - Pandas: used by `backend/calculator.py` for date/time utilities
+
+fastapi>=0.95
+uvicorn[standard]>=0.21
+pandas>=2.0
+
+# Optional (recommended) for faster JSON responses with FastAPI
+# orjson>=3.8
+
