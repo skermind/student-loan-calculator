@@ -92,17 +92,17 @@ export default function Home() {
       };
 
       const resData = await axios.post<LoanYear[]>(
-        'http://127.0.0.1:8000/calculate',
+        'http://192.168.0.6:3000/calculate',
         payload
       );
 
       const resSummary = await axios.post<LoanSummary>(
-        'http://127.0.0.1:8000/calculate-summary',
+        'http://192.168.0.6:3000/calculate-summary',
         payload
       );
 
       const resOver = await axios.post<LoanOverpayment[]>(
-        'http://127.0.0.1:8000/calculate-overpayment',
+        'http://192.168.0.6:3000/calculate-overpayment',
         payload
       );
 
@@ -356,6 +356,7 @@ export default function Home() {
                 <LoanSummaryChart
                   principal={summary.PrincipalLoanAmount}
                   interest={summary.TotalInterest}
+                  results={results}
                 />
               )}
 

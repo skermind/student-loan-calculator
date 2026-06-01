@@ -6,20 +6,50 @@ import { motion } from 'framer-motion';
 interface LoanSummaryProps {
   principal: number;
   interest: number;
+  results?: any[];
 }
 
-export default function LoanSummaryChart({ principal, interest }: LoanSummaryProps) {
+export default function LoanSummaryChart({ principal, interest, results }: LoanSummaryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [hovered, setHovered] = useState<'principal' | 'interest' | null>(null);
   const [hoverPos, setHoverPos] = useState<number | null>(null);
-  const total = principal + interest;
-  const principalPercent = (principal / total) * 100;
+
+  // DEBUG: inspect incoming results shape
+  console.log('📊 LoanSummaryChart results:', results);
+  console.log('📊 First result row:', results?.[0]);
+  console.log('📊 Result keys:', results?.[0] ? Object.keys(results[0]) : 'no results');
+
+  const totalPaid = results?.length
+    ? results.reduce((a, r, i) => {
+        const repayment = Number(r.Repayment || 0);
+
+        if (i < 3) {
+          console.log(`📊 Row ${i} repayment value:`, r.Repayment, 'parsed:', repayment);
+        }
+
+        return a + repayment;
+      }, 0)
+    : 0;
+
+  const totalInterest = results?.length
+    ? results.reduce((a, r) => a + Number(r.Interest || 0), 0)
+    : Number(interest || 0);
+
+  const principalAmount = principal;
+
+  const expectedTotal = principal + totalInterest;
+  const total = expectedTotal;
+  const principalPercent = total ? (principal / total) * 100 : 0;
+  const paidPercent = total && totalPaid
+    ? Math.min(100, (totalPaid / total) * 100)
+    : 0;
+
   const data = [
     {
       name: 'Loan',
-      principal,
-      interest,
+      principal: principalAmount,
+      interest: totalInterest,
     },
   ];
 
@@ -153,7 +183,7 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
               <motion.div
                 className="absolute top-0 right-0 h-full bg-[#ff6b6b]"
                 style={{
-                  width: `${(interest / total) * 100}%`,
+                  width: `${(totalInterest / total) * 100}%`,
                   opacity: hovered && hovered !== 'interest' ? 0.25 : 1,
                   filter:
                     hovered === 'interest'
@@ -170,6 +200,26 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
                   setHoverPos(null);
                 }}
               />
+
+              {/* PAID OFF MARKER LINE */}
+              <div
+                className="absolute top-0 h-full border-l-2 border-dashed border-[#4da3ff] z-20"
+                style={{
+                  left: `${paidPercent}%`,
+                  transform: 'translateX(-50%)'
+                }}
+              />
+
+              {/* PAID OFF LABEL */}
+              <div
+                className="absolute -top-5 text-[10px] text-[#4da3ff] whitespace-nowrap"
+                style={{
+                  left: `${paidPercent}%`,
+                  transform: 'translateX(-50%)'
+                }}
+              >
+                Paid £{totalPaid.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+              </div>
             </div>
 
             {hovered && hoverPos !== null && (
@@ -188,7 +238,7 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
                   </span>
                 ) : (
                   <span className="text-[#ff6b6b] font-semibold">
-                    Interest: £{interest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+                    Interest: £{totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
                   </span>
                 )}
               </div>
@@ -239,10 +289,21 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
             <div>
               <p className="text-[#a9b3c1] text-xs">Interest Cost</p>
               <motion.p className="text-[#ff6b6b] font-bold text-lg" variants={numberVariants}>
-                £{interest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+                £{totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
               </motion.p>
             </div>
           </div>
+
+
+          <div className="flex items-center gap-3">
+            <div className="w-6 h-6 bg-[#4da3ff] rounded" />
+            <div>
+              <p className="text-[#a9b3c1] text-xs">Paid Off</p>
+              <motion.p className="text-[#4da3ff] font-bold text-lg" variants={numberVariants}>
+                £{totalPaid.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+              </motion.p>
+            </div>
+           </div> 
 
           <div className="flex items-center gap-3 ml-auto">
             <div className="w-6 h-6 bg-[#fcffe9] border border-[#2a2f3d] rounded" />
@@ -262,9 +323,9 @@ export default function LoanSummaryChart({ principal, interest }: LoanSummaryPro
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          {(interest / principal) > 0.5
-            ? `You'll pay £${interest.toLocaleString('en-GB', { maximumFractionDigits: 0 })} in interest — ${((interest / principal) * 100).toFixed(0)}% of your initial loan amount.`
-            : `Your interest costs are relatively low at £${interest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}.`}
+          {principal > 0 && (totalInterest / principal) > 0.5
+            ? `You'll pay £${totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })} in interest — ${((totalInterest / principal) * 100).toFixed(0)}% of your initial loan amount.`
+            : `Your interest costs are relatively low at £${totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}.`}
         </motion.p>
       </motion.div>
     </motion.div>
