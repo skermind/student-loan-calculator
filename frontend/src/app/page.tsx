@@ -429,11 +429,6 @@ export default function Home() {
               {/* Unified Overpayment Comparison Chart */}
               {summary && results.length > 0 && (
                 <div className="mt-8 mb-8">
-                  <OverpaymentSummaryChart
-                    summary={summary}
-                    results={results}
-                    overpaymentResults={overpaymentResults}
-                  />
               <div className="mt-8">
                 <OverpaymentComparisonSummary
                   baseline={results}
