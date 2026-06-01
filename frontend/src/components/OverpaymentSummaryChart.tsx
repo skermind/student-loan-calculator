@@ -16,6 +16,7 @@ export default function OverpaymentSummaryChart({ summary, results, overpaymentR
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState(false);
   const [hovered, setHovered] = useState<string | null>(null);
+  const [hoverPos, setHoverPos] = useState<number | null>(null);
 
   if (!summary || !results?.length || !overpaymentResults?.length) return null;
 
@@ -40,13 +41,29 @@ export default function OverpaymentSummaryChart({ summary, results, overpaymentR
 
   const overInterest = overpaymentResults.reduce((a, r) => a + r.Interest, 0);
 
-  const totalOverpayment = overpaymentResults.reduce(
-    (a, r) => a + (r.Overpayment || 0),
-    0
-  );
+  const totalOverpayment = overpaymentResults.reduce((a, r) => {
+    const value = Object.entries(r).find(([key]) =>
+      key.toLowerCase().includes('overpayment')
+    );
+
+    return a + Number(value?.[1] ?? 0);
+  }, 0);
 
   const overPrincipal = summary.PrincipalLoanAmount;
   const overTotal = overPrincipal + totalOverpayment + overInterest;
+
+  console.log('OverpaymentSummaryChart', {
+    overPrincipal,
+    totalOverpayment,
+    overInterest,
+    overTotal
+  });
+
+  console.log('First overpayment row', overpaymentResults[0]);
+
+  if (overpaymentResults.length > 0) {
+    console.log('Available keys', Object.keys(overpaymentResults[0]));
+  }
 
   // 🔥 shared axis (true unified comparison)
   const maxTotal = Math.max(baselineTotal, overTotal);
@@ -72,42 +89,59 @@ export default function OverpaymentSummaryChart({ summary, results, overpaymentR
         Loan Comparison Overview
       </motion.h2>
 
-      {/* CHART CARD (single unified system) */}
-      <div className="p-4 bg-[#1a1d29] border border-[#2a2f3d] rounded-lg space-y-8">
+      {/* Main Bar Chart */}
+      <motion.div className="space-y-8">
 
-        {/* BASELINE ROW */}
-        <div>
-          <p className="text-xs text-[#a9b3c1] mb-2">Standard Loan</p>
+        {/* BASELINE BAR */}
+        <motion.div
+          className="w-full space-y-3"
+          variants={barVariants}
+          initial="hidden"
+          animate={isInView ? 'visible' : 'hidden'}
+          style={{ transformOrigin: 'left' }}
+        >
+          <div className="relative w-full">
 
-          <motion.div
-            className="w-full h-12 bg-[#161924] rounded-lg overflow-hidden ring-1 ring-[#2a2f3d] flex"
-            variants={barVariants}
-            initial="hidden"
-            animate={isInView ? "visible" : "hidden"}
-            style={{ transformOrigin: 'left' }}
-          >
-            <div
-              className="h-full bg-[#1DB954]"
-              style={{ width: `${(baselinePrincipal / maxTotal) * 100}%` }}
-              onMouseEnter={() => setHovered('baseline-principal')}
-              onMouseLeave={() => setHovered(null)}
-            />
+            <div className="relative w-full h-12 bg-[#161924] rounded-lg overflow-hidden ring-1 ring-[#2a2f3d]">
 
-            <div
-              className="h-full bg-[#ff6b6b]"
-              style={{ width: `${(baselineInterest / maxTotal) * 100}%` }}
-              onMouseEnter={() => setHovered('baseline-interest')}
-              onMouseLeave={() => setHovered(null)}
-            />
-          </motion.div>
-        </div>
+              {/* PRINCIPAL */}
+              <motion.div
+                className="absolute left-0 top-0 h-full bg-[#1DB954]"
+                style={{ width: `${(baselinePrincipal / baselineTotal) * 100}%` }}
+                onMouseEnter={() => {
+                  setHovered('baseline-principal');
+                  setHoverPos((baselinePrincipal / 2 / maxTotal) * 100);
+                }}
+                onMouseLeave={() => {
+                  setHovered(null);
+                  setHoverPos(null);
+                }}
+              />
 
-        {/* OVERPAYMENT ROW */}
+              {/* INTEREST */}
+              <motion.div
+                className="absolute top-0 right-0 h-full bg-[#ff6b6b]"
+                style={{ width: `${(baselineInterest / baselineTotal) * 100}%` }}
+                onMouseEnter={() => {
+                  setHovered('baseline-interest');
+                  setHoverPos((baselinePrincipal + baselineInterest / 2) / maxTotal * 100);
+                }}
+                onMouseLeave={() => {
+                  setHovered(null);
+                  setHoverPos(null);
+                }}
+              />
+
+            </div>
+          </div>
+        </motion.div>
+
+        {/* OVERPAYMENT BAR */}
         <div>
           <p className="text-xs text-[#a9b3c1] mb-2">With Overpayment</p>
 
           <motion.div
-            className="w-full h-12 bg-[#161924] rounded-lg overflow-hidden ring-1 ring-[#2a2f3d] flex"
+            className="relative w-full h-12 bg-[#161924] rounded-lg overflow-hidden ring-1 ring-[#2a2f3d] flex"
             variants={barVariants}
             initial="hidden"
             animate={isInView ? "visible" : "hidden"}
@@ -116,22 +150,40 @@ export default function OverpaymentSummaryChart({ summary, results, overpaymentR
             <div
               className="h-full bg-[#1DB954]"
               style={{ width: `${(overPrincipal / maxTotal) * 100}%` }}
-              onMouseEnter={() => setHovered('over-principal')}
-              onMouseLeave={() => setHovered(null)}
+              onMouseEnter={() => {
+                setHovered('over-principal');
+                setHoverPos((overPrincipal / 2 / maxTotal) * 100);
+              }}
+              onMouseLeave={() => {
+                setHovered(null);
+                setHoverPos(null);
+              }}
             />
 
             <div
               className="h-full bg-[#4da3ff]"
               style={{ width: `${(totalOverpayment / maxTotal) * 100}%` }}
-              onMouseEnter={() => setHovered('over-payment')}
-              onMouseLeave={() => setHovered(null)}
+              onMouseEnter={() => {
+                setHovered('over-payment');
+                setHoverPos(((overPrincipal + totalOverpayment / 2) / maxTotal) * 100);
+              }}
+              onMouseLeave={() => {
+                setHovered(null);
+                setHoverPos(null);
+              }}
             />
 
             <div
               className="h-full bg-[#ff6b6b]"
               style={{ width: `${(overInterest / maxTotal) * 100}%` }}
-              onMouseEnter={() => setHovered('over-interest')}
-              onMouseLeave={() => setHovered(null)}
+              onMouseEnter={() => {
+                setHovered('over-interest');
+                setHoverPos(((overPrincipal + totalOverpayment + overInterest / 2) / maxTotal) * 100);
+              }}
+              onMouseLeave={() => {
+                setHovered(null);
+                setHoverPos(null);
+              }}
             />
           </motion.div>
         </div>
@@ -142,16 +194,51 @@ export default function OverpaymentSummaryChart({ summary, results, overpaymentR
           <span><span className="text-[#ff6b6b]">■</span> Interest</span>
           <span><span className="text-[#4da3ff]">■</span> Overpayment</span>
         </div>
+
+      </motion.div>
+
       </div>
 
       {/* TOOLTIP */}
-      {hovered && (
-        <div className="mt-4 text-xs text-[#fcffe9] bg-[#0f111a] border border-[#2a2f3d] p-2 rounded-md inline-block">
-          {hovered === 'baseline-principal' && `Principal: £${baselinePrincipal.toLocaleString('en-GB')}`}
-          {hovered === 'baseline-interest' && `Interest: £${baselineInterest.toLocaleString('en-GB')}`}
-          {hovered === 'over-principal' && `Principal: £${overPrincipal.toLocaleString('en-GB')}`}
-          {hovered === 'over-payment' && `Overpayment: £${totalOverpayment.toLocaleString('en-GB')}`}
-          {hovered === 'over-interest' && `Interest: £${overInterest.toLocaleString('en-GB')}`}
+      {hovered && hoverPos !== null && (
+        <div
+          className="absolute -bottom-5 px-3 py-1 bg-gray-900 rounded-lg text-center text-xs shadow-lg"
+          style={{
+            left: `${hoverPos}%`,
+            transform: 'translateX(-50%)',
+            pointerEvents: 'none',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          {hovered === 'baseline-principal' && (
+            <span className="text-[#1DB954] font-semibold">
+              Principal: £{baselinePrincipal.toLocaleString('en-GB')}
+            </span>
+          )}
+
+          {hovered === 'baseline-interest' && (
+            <span className="text-[#ff6b6b] font-semibold">
+              Interest: £{baselineInterest.toLocaleString('en-GB')}
+            </span>
+          )}
+
+          {hovered === 'over-principal' && (
+            <span className="text-[#1DB954] font-semibold">
+              Principal: £{overPrincipal.toLocaleString('en-GB')}
+            </span>
+          )}
+
+          {hovered === 'over-payment' && (
+            <span className="text-[#4da3ff] font-semibold">
+              Overpayment: £{totalOverpayment.toLocaleString('en-GB')}
+            </span>
+          )}
+
+          {hovered === 'over-interest' && (
+            <span className="text-[#ff6b6b] font-semibold">
+              Interest: £{overInterest.toLocaleString('en-GB')}
+            </span>
+          )}
         </div>
       )}
 

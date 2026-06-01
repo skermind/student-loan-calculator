@@ -38,8 +38,14 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
 
   const principalAmount = principal;
 
-  const expectedTotal = principal + totalInterest;
-  const total = expectedTotal;
+  // If we have repayment results, show the loan only up to the amount
+  // actually repaid rather than principal + projected interest.
+  const total = totalPaid > 0
+    ? totalPaid
+    : principal + totalInterest;
+
+  const displayedInterest = Math.max(0, total - principal);
+
   const principalPercent = total ? (principal / total) * 100 : 0;
   const paidPercent = total && totalPaid
     ? Math.min(100, (totalPaid / total) * 100)
@@ -49,7 +55,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
     {
       name: 'Loan',
       principal: principalAmount,
-      interest: totalInterest,
+      interest: displayedInterest,
     },
   ];
 
@@ -183,7 +189,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
               <motion.div
                 className="absolute top-0 right-0 h-full bg-[#ff6b6b]"
                 style={{
-                  width: `${(totalInterest / total) * 100}%`,
+                  width: `${(displayedInterest / total) * 100}%`,
                   opacity: hovered && hovered !== 'interest' ? 0.25 : 1,
                   filter:
                     hovered === 'interest'
@@ -201,25 +207,6 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
                 }}
               />
 
-              {/* PAID OFF MARKER LINE */}
-              <div
-                className="absolute top-0 h-full border-l-2 border-dashed border-[#4da3ff] z-20"
-                style={{
-                  left: `${paidPercent}%`,
-                  transform: 'translateX(-50%)'
-                }}
-              />
-
-              {/* PAID OFF LABEL */}
-              <div
-                className="absolute -top-5 text-[10px] text-[#4da3ff] whitespace-nowrap"
-                style={{
-                  left: `${paidPercent}%`,
-                  transform: 'translateX(-50%)'
-                }}
-              >
-                Paid £{totalPaid.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
-              </div>
             </div>
 
             {hovered && hoverPos !== null && (
@@ -238,7 +225,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
                   </span>
                 ) : (
                   <span className="text-[#ff6b6b] font-semibold">
-                    Interest: £{totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+                    Interest: £{displayedInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
                   </span>
                 )}
               </div>
@@ -289,7 +276,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
             <div>
               <p className="text-[#a9b3c1] text-xs">Interest Cost</p>
               <motion.p className="text-[#ff6b6b] font-bold text-lg" variants={numberVariants}>
-                £{totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
+                £{displayedInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
               </motion.p>
             </div>
           </div>
@@ -323,9 +310,9 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          {principal > 0 && (totalInterest / principal) > 0.5
-            ? `You'll pay £${totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })} in interest — ${((totalInterest / principal) * 100).toFixed(0)}% of your initial loan amount.`
-            : `Your interest costs are relatively low at £${totalInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}.`}
+          {principal > 0 && (displayedInterest / principal) > 0.5
+            ? `You'll pay £${displayedInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })} in interest — ${((displayedInterest / principal) * 100).toFixed(0)}% of your initial loan amount.`
+            : `Your interest costs are relatively low at £${displayedInterest.toLocaleString('en-GB', { maximumFractionDigits: 0 })}.`}
         </motion.p>
       </motion.div>
     </motion.div>
