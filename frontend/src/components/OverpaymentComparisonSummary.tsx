@@ -32,6 +32,13 @@ export default function OverpaymentComparisonSummary({
 
   const totalSaved = (baselineTotal ?? 0) - (overpaymentTotal ?? 0);
 
+  const baselineTotalPaid = baselineTotal;
+  const overpaymentTotalPaid = overpaymentTotal;
+
+  const differenceInCost = baselineTotalPaid - overpaymentTotalPaid;
+
+  const isWorthOverpaying = differenceInCost > 0;
+
   const isWorseScenario =
     isOverpaymentActive && Number.isFinite(totalSaved) && totalSaved < 0;
 
@@ -67,6 +74,54 @@ export default function OverpaymentComparisonSummary({
               : 'N/A'}
           </div>
         </div>
+      </div>
+
+      <div className="mt-4 p-4 rounded-lg border border-[#2a2f3d] bg-[#0b0d12] text-sm">
+
+        <div className="text-xs text-[#6b7280] mb-3">Overpayment comparison</div>
+
+        {/* SIDE BY SIDE COMPARISON */}
+        <div className="grid grid-cols-2 gap-4">
+
+          {/* BASELINE */}
+          <div className="p-3 rounded-lg bg-[#161924] border border-[#2a2f3d]">
+            <div className="text-xs text-[#a9b3c1] mb-1">Baseline</div>
+            <div className="flex items-center justify-between">
+              <span className="text-[#a9b3c1] text-xs">Total Paid</span>
+              <span className="text-[#1DB954] font-bold">
+                £{baselineTotalPaid.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </span>
+            </div>
+          </div>
+
+          {/* OVERPAYMENT SCENARIO */}
+          <div className="p-3 rounded-lg bg-[#161924] border border-[#2a2f3d]">
+            <div className="text-xs text-[#a9b3c1] mb-1">With Overpayments</div>
+            <div className="flex items-center justify-between">
+              <span className="text-[#a9b3c1] text-xs">Total Paid</span>
+              <span className="text-[#4da3ff] font-bold">
+                £{overpaymentTotalPaid.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        {/* RESULT ROW */}
+        <div className="mt-3 p-3 rounded-lg border border-[#2a2f3d] bg-[#0f1117] flex items-center justify-between">
+          <span className="text-[#a9b3c1] text-xs">Difference</span>
+          <span className={isWorthOverpaying ? "text-[#1DB954] font-bold" : "text-[#ff6b6b] font-bold"}>
+            {isWorthOverpaying ? '+' : '-'}£{Math.abs(differenceInCost).toLocaleString(undefined, { maximumFractionDigits: 0 })}
+          </span>
+        </div>
+
+        {/* INSIGHT */}
+        <div className="mt-3 text-[#a9b3c1] text-xs">
+          {isWorthOverpaying
+            ? 'Overpayments reduce total cost in this scenario.'
+            : 'Overpayments do not reduce total cost in this scenario.'}
+        </div>
+
       </div>
 
       {isWorseScenario && (

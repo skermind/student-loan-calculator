@@ -64,6 +64,8 @@ export default function OverpaymentComparisonLineGraph({
           <XAxis
             dataKey="Year"
             stroke="#a9b3c1"
+             interval={1}
+             ticks={data.map(d => d.Year)}
           />
           <YAxis
             stroke="#a9b3c1"
