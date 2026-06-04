@@ -72,7 +72,11 @@ export default function OverpaymentComparisonLineGraph({
             tickFormatter={(v) => `£${v.toLocaleString()}`}
           />
           <Tooltip
-            formatter={(value: number) => `£${value.toLocaleString()}`}
+            formatter={(value: number | string | readonly (number | string)[] | undefined) => {
+              if (value == null) return '';
+              const numericValue = Array.isArray(value) ? value[0] : value;
+              return `£${Number(numericValue).toLocaleString()}`;
+            }}
             labelFormatter={(label) => `Year ${label}`}
             contentStyle={{
               backgroundColor: '#1a1d29',

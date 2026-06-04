@@ -4,7 +4,6 @@ import axios from 'axios';
 import { Geist, Geist_Mono } from 'next/font/google';
 import * as Slider from '@radix-ui/react-slider';
 import LoanSummaryChart from '@/components/LoanSummaryChart';
-import OverpaymentSummaryChart from '@/components/OverpaymentSummaryChart';
 import OverpaymentComparisonLineGraph from '@/components/OverpaymentComparisonLineGraph';
 import OverpaymentComparisonSummary from '@/components/OverpaymentComparisonSummary';
 
@@ -401,7 +400,7 @@ export default function Home() {
                     min={0}
                     max={1000}
                     step={50}
-                    onValueChange={(value) => setOverpaymentMonthly(value[0])}
+                    onValueChange={(value: number[]) => setOverpaymentMonthly(value[0])}
                   >
                     <Slider.Track className="relative grow rounded-full h-1 bg-[#2a2f3d]">
                       <Slider.Range className="absolute h-full bg-[#1DB954] rounded-full" />
