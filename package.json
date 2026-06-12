@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "@radix-ui/react-slider": "^1.3.6",
-    "recharts": "^3.8.1"
-  }
-}
