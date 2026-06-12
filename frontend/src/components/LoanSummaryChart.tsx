@@ -89,7 +89,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
       scaleX: 1,
       transition: {
         duration: 2.0,
-        ease: [0.22, 1, 0.36, 1],
+        ease: [0.22, 1, 0.36, 1] as const,
       },
     },
   };
@@ -102,7 +102,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
       scale: 1,
       transition: {
         duration: 0.6,
-        ease: 'easeOut',
+        ease: [0.42, 0, 0.58, 1] as const,
         delay: 1.1,
       },
     },
