@@ -51,6 +51,12 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
     ? Math.min(100, (totalPaid / total) * 100)
     : 0;
 
+  const isUnderpaid = totalPaid > 0 && totalPaid < principal;
+
+  const axisMax = isUnderpaid ? principal : total;
+
+  const paidWidthPercent = axisMax ? (totalPaid / axisMax) * 100 : 0;
+
   const data = [
     {
       name: 'Loan',
@@ -88,18 +94,6 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
     },
   };
 
-  const markerVariants = {
-    hidden: { opacity: 0, scale: 0.5 },
-    visible: {
-      opacity: 1,
-      scale: 1,
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-        delay: 1.0,
-      },
-    },
-  };
 
   const numberVariants = {
     hidden: { opacity: 0, scale: 0.5 },
@@ -126,8 +120,8 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
       {/* Title */}
       <motion.h2
         className="text-2xl font-bold text-[#1DB954] mb-8"
-        initial={{ opacity: 0, y: 20 }}
-        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
       >
         Your Loan Breakdown
@@ -207,6 +201,19 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
                 }}
               />
 
+              {/* UNDERPAID OVERLAY */}
+              {isUnderpaid && totalPaid > 0 && (
+                <motion.div
+                  className="absolute left-0 top-0 h-full bg-white"
+                  style={{
+                    width: `${paidWidthPercent}%`,
+                    opacity: 0.5,
+                    pointerEvents: 'none',
+                    mixBlendMode: 'overlay',
+                  }}
+                />
+              )}
+
             </div>
 
             {hovered && hoverPos !== null && (
@@ -240,16 +247,13 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
               <div
                 className="absolute text-xs text-[#1DB954]"
                 style={{
-                  left: `${(principal / total) * 100}%`,
+                  left: `${(principal / axisMax) * 100}%`,
                   transform: 'translateX(-50%)',
                 }}
               >
                 £{principal.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
               </div>
 
-              <div className="absolute right-0 text-xs text-[#fcffe9]">
-                £{total.toLocaleString('en-GB', { maximumFractionDigits: 0 })}
-              </div>
             </div>
           </div>
         </motion.div>
@@ -257,8 +261,8 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
         {/* Legend */}
         <motion.div
           className="flex gap-8 mt-10 pt-6 border-t border-[#2a2f3d]"
-          initial={{ opacity: 0, y: 10 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
         >
           <div className="flex items-center gap-3">
@@ -306,8 +310,8 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
         {/* Insight Text */}
         <motion.p
           className="text-[#a9b3c1] text-sm italic"
-          initial={{ opacity: 0, y: 10 }}
-          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+          initial={{ opacity: 0, y: 8 }}
+          animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
           {principal > 0 && (displayedInterest / principal) > 0.5
