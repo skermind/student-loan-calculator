@@ -19,7 +19,10 @@ app = FastAPI()
 
 # Allow your frontend origin to make requests
 origins = [
-    "http://localhost:3000",  # Next.js dev server
+    "http://localhost:3000",
+    "http://localhost:3001",
+    "https://studentloancalculator.danielskerman.com",
+    "https://danielskerman.com",
 ]
 
 app.add_middleware(
