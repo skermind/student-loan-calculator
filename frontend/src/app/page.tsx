@@ -91,17 +91,17 @@ export default function Home() {
       };
 
       const resData = await axios.post<LoanYear[]>(
-        'http://127.0.0.1:8000/calculate',
+        '/api/calculate',
         payload
       );
 
       const resSummary = await axios.post<LoanSummary>(
-        'http://127.0.0.1:8000/calculate-summary',
+        '/api/calculate-summary',
         payload
       );
 
       const resOver = await axios.post<LoanOverpayment[]>(
-        'http://127.0.0.1:8000/calculate-overpayment',
+        '/api/calculate-overpayment',
         payload
       );
 
