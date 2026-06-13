@@ -112,14 +112,14 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
   return (
     <motion.div
       ref={containerRef}
-      className="w-full mt-12 mb-8"
+      className="w-full mt-8 sm:mt-12 mb-6 sm:mb-8"
       initial={{ opacity: 0 }}
       animate={isInView ? { opacity: 1 } : { opacity: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
     >
       {/* Title */}
       <motion.h2
-        className="text-2xl font-bold text-[#1DB954] mb-8"
+        className="text-xl sm:text-2xl font-bold text-[#1DB954] mb-6 sm:mb-8"
         initial={{ opacity: 0, y: 12 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
         transition={{ duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
@@ -139,7 +139,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
         >
           <div className="relative w-full">
             {/* BAR TRACK */}
-            <div className="relative w-full h-12 bg-[#161924] rounded-lg overflow-hidden ring-1 ring-[#2a2f3d]">
+            <div className="relative w-full h-8 sm:h-12 bg-[#161924] rounded-lg overflow-hidden ring-1 ring-[#2a2f3d]">
 
               {/* Sweep highlight */}
               <motion.div
@@ -218,7 +218,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
 
             {hovered && hoverPos !== null && (
               <div
-                className="absolute -bottom-5 px-3 py-1  bg-gray-900 rounded-lg text-center text-xs shadow-lg"
+                className="hidden sm:block absolute -bottom-5 px-3 py-1  bg-gray-900 rounded-lg text-center text-xs shadow-lg"
                 style={{
                   left: `${hoverPos}%`,
                   transform: 'translateX(-50%)',
@@ -260,7 +260,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
 
         {/* Legend */}
         <motion.div
-          className="flex gap-8 mt-10 pt-6 border-t border-[#2a2f3d]"
+          className="grid grid-cols-2 sm:flex sm:flex-row gap-4 sm:gap-8 mt-10 pt-6 border-t border-[#2a2f3d]"
           initial={{ opacity: 0, y: 8 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
@@ -296,7 +296,7 @@ export default function LoanSummaryChart({ principal, interest, results }: LoanS
             </div>
            </div> 
 
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center gap-3">
             <div className="w-6 h-6 bg-[#fcffe9] border border-[#2a2f3d] rounded" />
             <div>
               <p className="text-[#a9b3c1] text-xs">Total to Pay</p>

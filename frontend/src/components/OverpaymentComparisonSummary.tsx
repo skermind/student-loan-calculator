@@ -44,7 +44,7 @@ export default function OverpaymentComparisonSummary({
 
   return (
     <div className="mb-4 p-3 rounded-lg border border-[#2a2f3d] bg-[#0f1117] text-sm text-[#a9b3c1]">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
 
         <div>
           <div className="text-xs text-[#6b7280]">Years saved</div>
@@ -81,7 +81,7 @@ export default function OverpaymentComparisonSummary({
         <div className="text-xs text-[#6b7280] mb-3">Overpayment comparison</div>
 
         {/* SIDE BY SIDE COMPARISON */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
 
           {/* BASELINE */}
           <div className="p-3 rounded-lg bg-[#161924] border border-[#2a2f3d]">
@@ -108,7 +108,7 @@ export default function OverpaymentComparisonSummary({
         </div>
 
         {/* RESULT ROW */}
-        <div className="mt-3 p-3 rounded-lg border border-[#2a2f3d] bg-[#0f1117] flex items-center justify-between">
+        <div className="mt-3 p-3 rounded-lg border border-[#2a2f3d] bg-[#0f1117] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
           <span className="text-[#a9b3c1] text-xs">Difference</span>
           <span className={isWorthOverpaying ? "text-[#1DB954] font-bold" : "text-[#ff6b6b] font-bold"}>
             {isWorthOverpaying ? '+' : '-'}£{Math.abs(differenceInCost).toLocaleString(undefined, { maximumFractionDigits: 0 })}

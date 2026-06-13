@@ -173,7 +173,7 @@ export default function Home() {
   };
 
   return (
-    <div className={`${geistSans.className} ${geistMono.className} font-sans min-h-screen flex items-center justify-center bg-[#0f1117] text-[#fcffe9] p-8`}>
+    <div className={`${geistSans.className} ${geistMono.className} font-sans min-h-screen flex items-center justify-center bg-[#0f1117] text-[#fcffe9] p-4 sm:p-8`}>
       <style jsx global>{`
         input[type="range"]::-webkit-slider-runnable-track {
           height: 4px;
@@ -200,14 +200,14 @@ export default function Home() {
 
         <div className="bg-[var(--card-bg,#1a1d29)] border border-[var(--border-color,#2a2f3d)] rounded-2xl p-8 shadow mb-8">
           <div className="mb-8">
-            <div className="flex items-center justify-between gap-x-4 mb-10 relative group">
-              <label htmlFor="plan" className="text-[#a9b3c1] w-44">Repayment Plan</label>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-2 md:gap-y-0 mb-10 relative group">
+              <label htmlFor="plan" className="text-[#a9b3c1] w-full md:w-44">Repayment Plan</label>
               <select
                 id="plan"
                 name="plan"
                 value={form.plan}
                 onChange={handleChange}
-                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+                className="w-full md:flex-1 min-w-[0] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               >
                 <option value="plan_1">Plan 1</option>
                 <option value="plan_2">Plan 2</option>
@@ -216,7 +216,7 @@ export default function Home() {
                 <option value="postgraduate">Postgraduate</option>
               </select>
 
-              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-auto z-10">
+              <div className="hidden md:block absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Enter your student loan plan{' '}
                 <a href="https://www.gov.uk/sign-in-to-manage-your-student-loan-balance" target="_blank" rel="noopener noreferrer" className="underline text-[#1DB954] hover:text-[#17a74b]">
                   find here
@@ -224,17 +224,17 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-x-4 mb-10 relative group">
-              <label htmlFor="outstanding" className="text-[#a9b3c1] w-44">Outstanding (£)</label>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-2 md:gap-y-0 mb-10 relative group">
+              <label htmlFor="outstanding" className="text-[#a9b3c1] w-full md:w-44">Outstanding (£)</label>
               <input
                 id="outstanding"
                 name="outstanding"
                 value={form.outstanding}
                 onChange={handleChange}
                 type="number"
-                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+                className="w-full md:flex-1 min-w-[0] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               />
-              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-auto z-10">
+              <div className="hidden md:block absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Enter your outstanding student loan  balance {' '}
                 <a href="https://www.gov.uk/sign-in-to-manage-your-student-loan-balance" target="_blank" rel="noopener noreferrer" className="underline text-[#1DB954] hover:text-[#17a74b]">
                   find here
@@ -242,23 +242,23 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-x-4 mb-10 relative group">
-              <label htmlFor="salary" className="text-[#a9b3c1] w-44">Salary (£)</label>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-2 md:gap-y-0 mb-10 relative group">
+              <label htmlFor="salary" className="text-[#a9b3c1] w-full md:w-44">Salary (£)</label>
               <input
                 id="salary"
                 name="salary"
                 value={form.salary}
                 onChange={handleChange}
                 type="number"
-                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+                className="w-full md:flex-1 min-w-[0] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               />
-              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+              <div className="hidden md:block absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Enter you take home salary before tax
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-x-4 group relative mb-10">
-              <label htmlFor="bonus_rate" className="text-[#a9b3c1] w-44 cursor-default">Bonus Rate (%)</label>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-2 md:gap-y-0 group relative mb-10">
+              <label htmlFor="bonus_rate" className="text-[#a9b3c1] w-full md:w-44 cursor-default">Bonus Rate (%)</label>
               <input
                 id="bonus_rate"
                 name="bonus_rate"
@@ -266,15 +266,15 @@ export default function Home() {
                 onChange={handleChange}
                 type="number"
                 step="0.01"
-                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+                className="w-full md:flex-1 min-w-[0] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               />
-              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+              <div className="hidden md:block absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Enter bonus rate as a percentage (0-100)
               </div>
             </div>
 
-            <div className="flex items-center justify-between gap-x-4 group relative mb-8">
-              <label htmlFor="salary_growth" className="text-[#a9b3c1] w-44 cursor-default">Salary Growth (%)</label>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-2 md:gap-y-0 group relative mb-8">
+              <label htmlFor="salary_growth" className="text-[#a9b3c1] w-full md:w-44 cursor-default">Salary Growth (%)</label>
               <input
                 id="salary_growth"
                 name="salary_growth"
@@ -282,49 +282,49 @@ export default function Home() {
                 onChange={handleChange}
                 type="number"
                 step="0.01"
-                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+                className="w-full md:flex-1 min-w-[0] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               />
-              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+              <div className="hidden md:block absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Enter salary growth as a percentage (0-100)
               </div>
             </div>
 
             {/* Graduation Year */}
-            <div className="flex items-center justify-between gap-x-4 mb-10 relative group">
-              <label htmlFor="graduation_year" className="text-[#a9b3c1] w-44">Graduation Year</label>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-2 md:gap-y-0 mb-10 relative group">
+              <label htmlFor="graduation_year" className="text-[#a9b3c1] w-full md:w-44">Graduation Year</label>
               <select
                 id="graduation_year"
                 name="graduation_year"
                 value={form.graduation_year ?? ''}
                 onChange={handleChange}
-                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+                className="w-full md:flex-1 min-w-[0] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               >
                 <option value="" disabled>Select graduation year</option>
                 {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
               </select>
-              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+              <div className="hidden md:block absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Select your graduation year
               </div>
             </div>
 
             {/* Birth Year */}
-            <div className="flex items-center justify-between gap-x-4 mb-10 relative group">
-              <label htmlFor="birth_year" className="text-[#a9b3c1] w-44">Birth Year</label>
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-x-4 gap-y-2 md:gap-y-0 mb-10 relative group">
+              <label htmlFor="birth_year" className="text-[#a9b3c1] w-full md:w-44">Birth Year</label>
               <select
                 id="birth_year"
                 name="birth_year"
                 value={form.birth_year ?? ''}
                 onChange={handleChange}
-                className="flex-1 min-w-[180px] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
+                className="w-full md:flex-1 min-w-[0] bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 focus:outline-none focus:border-[#1DB954] focus:ring-2 focus:ring-[#1DB954] focus:ring-opacity-50 transition"
               >
                 <option value="" disabled>Select birth year</option>
                 {Array.from({ length: 2025 - 1900 }, (_, i) => 2025 - i).map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
               </select>
-              <div className="absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
+              <div className="hidden md:block absolute top-full left-[calc(11rem+1rem)] mt-2 w-max bg-gray-900 text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none z-10">
                 Select your birth year
               </div>
             </div>
@@ -389,8 +389,8 @@ export default function Home() {
 
               {/* Overpayment slider (always visible) */}
               <div className="mt-6 p-4 bg-[#1a1d29] border border-[#2a2f3d] rounded-lg">
-                <div className="flex items-center justify-between gap-4">
-                  <label className="text-[#a9b3c1] w-64">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <label className="text-[#a9b3c1] w-full md:w-64">
                     Overpayment (£/month)
                   </label>
 
@@ -416,7 +416,7 @@ export default function Home() {
                     step={50}
                     value={overpaymentMonthly}
                     onChange={(e) => setOverpaymentMonthly(Number(e.target.value))}
-                    className="w-24 bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 text-center"
+                    className="w-24 mx-auto md:mx-0 bg-[#1a1d29] text-[#fcffe9] border border-[#2a2f3d] rounded-md p-2 text-center"
                   />
                 </div>
 
@@ -460,32 +460,34 @@ export default function Home() {
                       Baseline Scenario
                     </h3>
 
-                    <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
-                      <thead className="bg-[#1a1d29] text-[#1DB954]">
-                        <tr>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {results.map((r, i) => (
-                          <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
-                            <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
+                        <thead className="bg-[#1a1d29] text-[#1DB954]">
+                          <tr>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {results.map((r, i) => (
+                            <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
+                              <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
 
                   {/* Overpayment table */}
@@ -494,32 +496,34 @@ export default function Home() {
                       Overpayment Scenario
                     </h3>
 
-                    <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
-                      <thead className="bg-[#1a1d29] text-[#1DB954]">
-                        <tr>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
-                          <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {overpaymentResults.map((r, i) => (
-                          <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
-                            <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
-                            <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm border-collapse rounded-lg overflow-hidden">
+                        <thead className="bg-[#1a1d29] text-[#1DB954]">
+                          <tr>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Year</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Salary</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Bonus</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Total Income</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Repayment</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Interest</th>
+                            <th className="border border-[#2a2f3d] px-3 py-2 text-left">Outstanding</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                        </thead>
+                        <tbody>
+                          {overpaymentResults.map((r, i) => (
+                            <tr key={r.Year} className={i % 2 === 0 ? 'bg-[#161924]' : ''}>
+                              <td className="border border-[#2a2f3d] px-3 py-1">{r.Year}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Salary.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Bonus.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.TotalIncome.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Repayment.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Interest.toFixed(0)}</td>
+                              <td className="border border-[#2a2f3d] px-3 py-1">£{r.Outstanding.toFixed(0)}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
 
                 </div>

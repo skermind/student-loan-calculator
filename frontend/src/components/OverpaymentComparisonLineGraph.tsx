@@ -27,6 +27,7 @@ export default function OverpaymentComparisonLineGraph({
   baseline,
   overpayment,
 }: Props) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
   const baselinePayoffYear = baseline.length
     ? baseline[baseline.length - 1].Year
     : undefined;
@@ -58,14 +59,19 @@ export default function OverpaymentComparisonLineGraph({
   }, [baseline, overpayment]);
 
   return (
-    <div className="w-full h-[400px] bg-[#0f1117] p-4 rounded-lg border border-[#2a2f3d]">
+    <div className="w-full h-[260px] sm:h-[400px] bg-[#0f1117] p-2 sm:p-4 rounded-lg border border-[#2a2f3d]">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
           <XAxis
             dataKey="Year"
             stroke="#a9b3c1"
-             interval={1}
-             ticks={data.map(d => d.Year)}
+            interval={isMobile ? 2 : 0}
+            ticks={data.map(d => d.Year)}
+            tick={{
+              fontSize: isMobile ? 10 : 12,
+              angle: isMobile ? -45 : 0,
+              textAnchor: isMobile ? 'end' : 'middle',
+            }}
           />
           <YAxis
             stroke="#a9b3c1"
@@ -84,7 +90,7 @@ export default function OverpaymentComparisonLineGraph({
               color: '#fff',
             }}
           />
-          <Legend />
+          <Legend iconSize={isMobile ? 10 : 14} />
 
           {baselinePayoffYear && (
             <ReferenceLine
