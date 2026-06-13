@@ -3,7 +3,7 @@ services:
     build: ./backend
     container_name: loan-backend
     expose:
-      - "8000"
+      - "8000:8000"
 
   frontend:
     build: ./frontend
