@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Student Loan Calculator | Daniel Skerman",
+  title: "Daniel Skerman | Student Loan Calculator ",
   description:
     "Free UK student loan repayment calculator. Estimate repayments, interest, and total cost based on salary and loan type.",
   keywords: [
@@ -54,6 +55,26 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              name: "Student Loan Calculator",
+              applicationCategory: "FinanceApplication",
+              operatingSystem: "Web",
+              author: {
+                "@type": "Person",
+                name: "Daniel Skerman",
+              },
+              url: "https://studentloancalculator.danielskerman.com",
+              description:
+                "UK student loan repayment calculator to estimate repayments, interest, and total cost.",
+            }),
+          }}
+        />
         {children}
       </body>
     </html>
