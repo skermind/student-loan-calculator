@@ -58,7 +58,7 @@ This helps users see:
 
 ## 🧰 Tech Stack
 
-- **Frontend**: Next.js, React, TypeScript, Tailwind CSS
+- **Frontend**: Next.js, React, TypeScript, Tailwind CSS (Node.js 22.23.4)
 - **Backend**: FastAPI, Python
 - **Data/Math Layer**: JSON-configured loan plans, numerical simulation logic
 - **Visualisation**: Recharts, Chart.js
